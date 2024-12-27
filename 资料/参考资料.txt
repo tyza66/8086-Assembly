@@ -7,3 +7,11 @@ https://www.bilibili.com/video/BV1UZ4y1X7A7/?spm_id_from=333.337.search-card.all
 https://www.bilibili.com/video/BV1KG411T77D/?spm_id_from=333.337.search-card.all.click&vd_source=6d9c7fcfc45843f722eeb4d921342de4
 https://www.bilibili.com/video/BV1Wt4y1R7TU/?spm_id_from=333.337.search-card.all.click&vd_source=6d9c7fcfc45843f722eeb4d921342de4
 https://github.com/HaiPenglai/bilibili_assembly
+
+r: register
+d: dump
+e: enter
+u: unassemble
+a: asdemble
+t: trace
+h: hex
