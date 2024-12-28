@@ -13,8 +13,14 @@ stack segment
 stack ends
 
 code segment
-start: 	mov ax,stack
+start: 	mov ax,data	;这就是存放data的段地址
 		mov ss,ax
-
+		
+		mov ax,4c00h
+		int 21H
 code ends
 end start
+
+;为了段防止冲突，段里的地址位置一定是16的倍数字节，至少是16个字节
+;数据段、栈段、代码段直接的地址其实是连续的
+;如果不写start CS:IP的未知默认是不对的 start的目的就是让CS和IP指向正确的开始的地方
