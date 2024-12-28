@@ -8,7 +8,7 @@ code segment
 	sub ax,1
 	
 	mov ax,4c00h
-	int 21
+	int 21H
 	
 	;上面的int21如果没有的话就相当于死循环相当于永远出不来
 	s: 	add ax,ax

@@ -11,7 +11,7 @@ s:	add ax,ax			;这里其实也执行了1次乘以二
 	loop s				;这里想要执行10次add 一共11次
 	
 	mov ax,4c00h
-	int 21
+	int 21H
 code ends
 end
 

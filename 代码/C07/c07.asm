@@ -12,6 +12,6 @@ code segment
 		loop s
 	
 	mov ax,4c00h
-	int 21
+	int 21H
 code ends
 end
