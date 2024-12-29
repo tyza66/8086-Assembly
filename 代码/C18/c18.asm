@@ -30,3 +30,8 @@ s1:		inc bx		;bx步进一下
 		
 codesg ends
 end start
+
+comment *
+	如果想要求最小值就让ah先为0FFH 
+	然后下面判定改为jna 跟刚才的相反
+* comment
