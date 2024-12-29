@@ -8,7 +8,7 @@ data segment
 	arr db 12,34	;前面的arr是别名(带:是标号相当于代码不能直接[]到达、也不能type)
 	;align指令用来内存对齐 如果当前地址不是4的倍数，汇编器会插入适当数量的填充字节（通常是0），直到地址成为4的倍数。
 	arr1 dw 12,34
-	arr2 db 'hello world'
+	arr2 db 'hello world'	;也可以用[]找到对应元素的地址 里面存放的是字母的ascii码
 	arr4 db 10H,20H,30H,40H,50H
 data ends
 
@@ -23,9 +23,13 @@ start:	mov ax,data			;通过这样就能找到之前那些段的地址
 		;mov si,offset arr	不可以找到arr的位置，因为当前在代码段不在数据段，如果想，可以把数据定义移动过来
 		mov ax,arr3[2];访问数组 但是和平时C中的数组不一样 下标每次移动都是移动一个字节而不是一个字
 		;等价于mov si,offset arr3 再 mov ax,cs:[si+2] 如果用db就没问题
+		;只写arr3 不写[]就表示的是第一个元素
 		
 		mov ax,data
 		mov ds,ax		;必须将ds和data的地址联系在一起 才能用后面的arr4 这里不可以直接赋值
 		mov al,arr4[2]	;如果想存入30应该使用mov al, arr4[2]吧，如果使用了ax会从arr4[2]区两个字节就是一个字进入ax导致ax值不对
+		;数组一个单元默认是一个字节的大小，我们可以反过来mov arr3,all来往数组里面写入值
+		;也就是说数组可以读取也可以写入
+		;mov word ptr arr2[2],ax 这样可以把ax这样一个一个字大小的数据存进去
 codesg ends
 end start
