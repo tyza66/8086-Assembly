@@ -13,12 +13,14 @@ code segment
 start:	mov ax,data	;先将ds指向数据区
 		mov ds,ax
 		
-		mov bx,0	;bx作为偏移地址
+		mov si,0	;相当于双指针
+		mov di,7
 		mov cx,8	;循环次数
 		
-for:	mov al,ds:arr[bx]		;如此实现平行复试
-		mov ds:res[bx],al
-		inc bx
+for:	mov al,ds:arr[si]		
+		mov ds:res[di],al
+		inc si		;si增
+		dec di		;di减
 		loop for
 
 		mov ax,4c00H
