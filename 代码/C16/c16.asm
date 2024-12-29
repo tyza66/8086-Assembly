@@ -1,7 +1,8 @@
 assume cs:codesg,ds:data,ss:stack
 
 data segment
-	string db 'hello world','$' ;美元符号相当于是一个截至符
+	string db 'hello world',10,'666','$' ;美元符号相当于是一个截至符
+	;10是换行的ascii码 32是空格的ascii码
 data ends
 
 stack segment
