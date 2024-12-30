@@ -4,6 +4,84 @@ CPU可以读取三个地方的数据:寄存器、内存单元、端口
 端口的读写不能使用传统的mov,push,pop啥的
 端口读写指令只有in和out
 
+in out相对于是当前的程序
+
+IN 指令：用于从指定的I/O端口读取数据。通常格式为 IN AL, DX，其中 DX 寄存器指定要读取的端口号，数据将被读入 AL 寄存器 相当于读入咱们的寄存器
+OUT 指令：用于将数据写入指定的I/O端口。通常格式为 OUT DX, AL，其中 DX 寄存器指定要写入的端口号，AL 寄存器中的数据将被写入该端口
+
 in al,60H 就是从60H号的端口读入一个字节
 
 访问8位端口的时候就用al寄存器 访问16位端口的似乎就用ax寄存器 使用in和out的时候只能使用ax或al寄存器
+
+PC机中有一个COMS RAM芯片包含一个时钟和一个有128存储单元的RAM存储器（早期有64个字节），这个芯片主要靠电池来供电，关机之后内部时钟热盎然可以正常工作，RAM中的信息不丢失
+128个字节的RAM中，内部时钟占用0-0dh个单元来保存时间信息，其余大部分单元用于保存系统配置信息，供系统启动时BIOS程序读取，BIOS也提供了相关的陈新股，使得我们可以在开机的时候配置COMS RAM中的系统信息、这个芯片内部有两个u单口，地址分别位17H和71H，CPU通过这两个端口读写CMOS RAM,70H位地址端口，存放要访问的COMS RAM的单元地址;71H为数据端口，存放从选定的COMS ARM单元中读取的数据或者要写入其中的数据
+总是就是两步 给70H传入要访问的地址 从71H读出要获得的值
+
+shl是逻辑左移，将内存单元中的二进制像左移动一位，将最后移出的一位写入CF中 相当于乘以二
+shr是逻辑右移动 多的也存在CF中 相当于除以二
+MOV AH, 0x02 ; 设置功能码，读取RTC时间 INT 0x1A ; BIOS中断调用，读取RTC时间 ; AH 返回分数 ; CH 返回年（BCD码） ; CL 返回月份（BCD码） ; DH 返回日期（BCD码） ; DL 返回小时（BCD码） ; AL 返回秒（BCD码） ; 将BCD码转换为二进制 MOV AL, CL ; 月份 AAM ; BCD转二进制 MOV CL, AX MOV AL, DH ; 日期 AAM ; BCD转二进制 MOV DH, AX MOV AL, CH ; 年 AAM ; BCD转二进制 MOV CH, AX ; 现在 CL 包含月份，DH 包含日期，CH 包含年份（所有均为二进制格式）
+
+section .data
+    year db 0
+    month db 0
+    day db 0
+
+section .text
+    global _start
+
+_start:
+    ; 禁止中断
+    cli
+
+    ; 设置端口70h以读取年份（十六进制的9）
+    mov al, 09h
+    out 70h, al
+    ; 从端口71h读取年份
+    in al, 71h
+    ; 保存年份
+    mov [year], al
+
+    ; 设置端口70h以读取月份（十六进制的8）
+    mov al, 08h
+    out 70h, al
+    ; 从端口71h读取月份
+    in al, 71h
+    ; 保存月份
+    mov [month], al
+
+    ; 设置端口70h以读取日期（十六进制的7）
+    mov al, 07h
+    out 70h, al
+    ; 从端口71h读取日期
+    in al, 71h
+    ; 保存日期
+    mov [day], al
+
+    ; 允许中断
+    sti
+
+    ; 转换BCD到二进制（假设年份、月份、日期都在BCD格式）
+    call BCD_to_binary
+
+    ; ... 在这里可以添加显示或进一步处理日期的代码 ...
+
+    ; 退出程序
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
+
+; 将BCD格式转换为二进制格式的子程序
+BCD_to_binary:
+    mov al, [year]
+    aam
+    mov [year], ax
+
+    mov al, [month]
+    aam
+    mov [month], ax
+
+    mov al, [day]
+    aam
+    mov [day], ax
+
+    ret
