@@ -1,0 +1,38 @@
+用int 10h中断实现
+要使用汇编语言在屏幕上显示一个字母并自定义颜色，可以使用BIOS或操作系统提供的中断服务来实现。这里我们将使用BIOS中断 INT 10h，它提供了许多视频服务功能。
+
+以下是一个简单的示例，展示如何在屏幕上显示字母'A'并设置其颜色：
+
+assembly
+section .data
+    letter db 'A'       ; 要显示的字母
+    color  db 0x0E      ; 颜色属性（黄色文本，黑色背景）
+
+section .text
+    global _start
+
+_start:
+    ; 设置视频模式（例如，80x25字符模式）
+    mov ah, 0x00
+    mov al, 0x03       ; 模式3：80x25，16色
+    int 0x10
+
+    ; 设置光标位置（行0，列0）
+    mov ah, 0x02
+    mov bh, 0x00       ; 页码
+    mov dh, 0x00       ; 行号
+    mov dl, 0x00       ; 列号
+    int 0x10
+
+    ; 显示字母并设置颜色
+    mov ah, 0x09       ; BIOS中断服务：写字符并设置属性
+    mov al, [letter]   ; 要显示的字符
+    mov bl, [color]    ; 颜色属性
+    mov bh, 0x00       ; 页码
+    mov cx, 1          ; 显示字符次数
+    int 0x10
+
+    ; 退出程序（对于DOS系统）
+    mov ah, 0x4C
+    mov al, 0x00
+    int 0x21
