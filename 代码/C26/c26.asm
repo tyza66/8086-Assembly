@@ -8,7 +8,6 @@ stack segment
 	db 10 dup(0)
 stack ends
 
-;让第四列全变成大写
 code segment
 start:	mov ax,data	;先将ds指向数据区
 		mov ds,ax
